@@ -41,7 +41,7 @@ namespace ConnectFour
 
             int pieceCount = 0;
             // Print the middle part of the board
-            for(int row = 0; row < 6; row++)
+            for (int row = 0; row < 6; row++)
             {
                 Console.ForegroundColor = ConsoleColor.Cyan;
 
@@ -72,9 +72,9 @@ namespace ConnectFour
                     else
                         Console.Write("    ");
                 }
-                Console.WriteLine("   [Q] Quit " );
+                Console.WriteLine("   [Q] Quit ");
             }
-            
+
         }
 
         /// <summary>
@@ -202,10 +202,10 @@ namespace ConnectFour
         public static void MenuSelectDifficulty()
         {
             Console.WriteLine("Please select Computer difficulty...");
-            Console.WriteLine(" [0] Random");
-            Console.WriteLine(" [1] Easy");
-            Console.WriteLine(" [2] Normal");
-            Console.WriteLine(" [3] Advanced");
+            Console.WriteLine(" [0] Very Easy (Moves randomly.)");
+            Console.WriteLine(" [1] Easy (Will try to ConnectFour and block a little.)");
+            Console.WriteLine(" [2] Normal (Will try to ConnectFour and block defensively.)");
+            Console.WriteLine(" [3] Advance (Will try to ConnectFour, block and plan a little.)");
             Console.Write("Choice : ");
         }
 

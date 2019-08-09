@@ -27,4 +27,16 @@ namespace ConnectFour
         Middle,
         Bottom
     }
+
+    public enum Direction : byte
+    {
+        Up = 0,
+        Left,
+        Right,
+        Down,
+        UpLeft,
+        UpRight,
+        DownLeft,
+        DownRight
+    }
 }

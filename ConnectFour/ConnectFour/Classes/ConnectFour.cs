@@ -39,25 +39,49 @@ namespace ConnectFour
         {
 
             // Setup First Player
-            // Setup Opponent
+            SetupPlayer();
 
-            Player currentPlayer; // Set this player as a random 
-            int index = 0; // This is the array index where we will put either 1 (player 1) or -1 (player 2)
+            // Setup Opponent
+            SetupOpponent();
+
+            // Set this player as a random 
+            Player currentplayer = SelectRandomPlayer();
+
+            // This is the array index where we will put either 1 (player 1) or -1 (player 2)
+            int index = 0; 
 
             // Start loop
-            // Switch players/get the opponent every start of the loop.
+            do
+            {
+                // Switch players/get the opponent every start of the loop.
+                currentplayer = GetOpponent(currentplayer);
 
-            // If current player is human, display the board.
+                // If current player is human, display the board.
+                if (currentplayer.IsHuman)
+                {
+                    Display.DisplayBoard(_pieces, true);
+                }
 
-            index = 0; // Get the player's move.
-            // If index < 0, then the player selected quit.
+                index = currentplayer.Move(_pieces);
+                // If index < 0, then the player selected quit.
+                if (index < 0)
+                {
+                    Quit(currentplayer);
+                    Console.WriteLine();
+                    return;
+                }
+                else
+                {
+                    // Else, place token (1 or -1) in array using our index
+                    _pieces[index] = currentplayer.Token;
+                }
+
+                //Increament moveCount;
+                _moveCount++;
             
-            // Else, place token (1 or -1) in array using our index
-
-            //Increament moveCount;
-            
-            // Iterate through loop until its the end of the game.
-                        
+                // Iterate through loop until its the end of the game.
+            } while (!CheckEndGame(currentplayer, index));
+            Console.WriteLine();
         }
 
         #endregion
@@ -71,6 +95,12 @@ namespace ConnectFour
         {
             string str = string.Empty;
             // Loop as long as user is giving an empty string or white space.
+            do
+            {
+                Console.WriteLine("Enter name of Player 1: ");
+                str = Console.ReadLine().Trim();
+
+            } while (str.Length == 0);
 
             // Initialize Player 1.
             _player1 = new PlayerHuman(str);
@@ -87,18 +117,63 @@ namespace ConnectFour
             string str = string.Empty;
 
             // Loop asking if opponont is human or computer
+            do
+            {
+                Display.MenuSelectOpponent(_player1.Name, _player1.PlayerColor);
 
+                str = Console.ReadLine().Trim().ToUpper();
+                if (str.Length == 0)
+                    str = "X";
+            } while (str[0] != 'H' && str[0] != 'C');
+
+            bool isHuman = str[0] == 'H' ? true : false;
             // If human, loop asking for a valid name (similar to player 1)
-            
-            _player2 = new PlayerHuman(str);
-            // Else, ask for computer difficulty
+            if (isHuman)
+            {
+                do
+                {
+                    Console.WriteLine("Enter Name of Player 2: ");
+                    str = Console.ReadLine().Trim();
 
-            ComputerDifficulty level = ComputerDifficulty.Random;
-            _player2 = new PlayerComputer("Computer(" + level.ToString() + ")", level);
-            
+                    if (str.ToUpper() == _player1.Name.ToUpper())
+                    {
+                        Console.WriteLine("Sorry, but {0} is already taken!", str);
+                    }
+                } while (str.Length == 0 || str.ToUpper() == _player1.Name.ToUpper());
+
+                _player2 = new PlayerHuman(str);
+
+            }
+            else
+            {
+                // Computer opponent, ask for difficulty
+                do
+                {
+                    Display.MenuSelectDifficulty();
+                    str = Console.ReadLine().Trim();
+                    if (str.Length == 0)
+                        str = "x";
+
+                } while (str[0] != '0' && str[0] != '1' && str[0] != '2' && str[0] != '3');
+
+
+
+                ComputerDifficulty level = ComputerDifficulty.Random;
+                if (str[0] == '1')
+                    level = ComputerDifficulty.Easy;
+                else if (str[0] == '2')
+                    level = ComputerDifficulty.Normal;
+                else if (str[0] == '3')
+                    level = ComputerDifficulty.Advanced;
+
+                _player2 = new PlayerComputer("Computer(" + level.ToString() + ")", level);
+            }
+
             // Supply the rest of the information for all cases.
             _player2.PlayerColor = ConsoleColor.Yellow;
             _player2.Token = -1;
+            
+
         }
 
         /// <summary>
@@ -107,22 +182,34 @@ namespace ConnectFour
         /// <returns></returns>
         private Player SelectRandomPlayer()
         {
+            Random random = new Random();
+            var select = random.Next(2);
             // Randomize between _player1 and _player2
-            return _player1;
+            if (select == 0)
+            {
+                return _player1;
+            }
+            else
+            {
+                return _player2;
+            }
         }
 
         /// <summary>
-        /// Checks if game has already ended either by a win or by draw or by quitting.
+        /// Checks if game has already ended either by a win or by draw or by quitting.D:\Team-Hortons-master\ConnectFour\ConnectFour\Classes\ConnectFour.cs
         /// </summary>
         /// <returns>Returns true if a player wins of board is filled or a player quits, otherwise false.</returns>
         private bool CheckEndGame(Player player, int index)
         {
             // Check first if winning move.
-            
+            if (CheckWin(player, index))
+                return true;
             // Check if draw.
-            
+            else if (CheckDraw())
+                return true;
             // Else, not end game.
-            
+            else
+                return false;
         }
 
         /// <summary>
@@ -132,11 +219,25 @@ namespace ConnectFour
         /// <returns>True if player wins, else false.</returns>
         private bool CheckWin(Player player, int index)
         {
-            // Check combination for all orientations
-            
-            // If win, display the finished board and message
+            bool isWin = false;
+            // Check combination for all orientations.
+            if (Calculation.CheckVerticalWin(_pieces, player.Token, index))
+                isWin = true;
+            else if (Calculation.CheckHorizontalWin(_pieces, player.Token, index))
+                isWin = true;
+            else if (Calculation.CheckDiagonalWin1(_pieces, player.Token, index))
+                isWin = true;
+            else if (Calculation.CheckDiagonalWin2(_pieces, player.Token, index))
+                isWin = true;
 
-            return false;
+            // If win, display the finished board and message
+            if (isWin)
+            {
+                Display.DisplayBoard(_pieces, false);
+                Display.MessageWin(player.Name, player.PlayerColor);
+            }
+
+            return isWin;
         }
 
         /// <summary>
@@ -145,11 +246,19 @@ namespace ConnectFour
         /// <returns></returns>
         private bool CheckDraw()
         {
+
             //Check if number of moves reached 42
+            bool endinDraw = _moveCount >= 42;
 
             // If draw, display the board and message
+            if (endinDraw)
+            {
+                Display.DisplayBoard(_pieces, false);
+                Display.MessageDraw(_player1.Name, _player1.PlayerColor, _player2.Name, _player2.PlayerColor);
 
-            return false;
+
+            }
+            return endinDraw;
         }
 
         /// <summary>
@@ -160,6 +269,9 @@ namespace ConnectFour
         private void Quit(Player player)
         {
             // Display quit message.
+            Player opponent = GetOpponent(player);
+            Console.WriteLine();
+            Display.MessageResignation(player.Name, player.PlayerColor, opponent.Name, opponent.PlayerColor);
         }
 
         /// <summary>
@@ -170,9 +282,14 @@ namespace ConnectFour
         private Player GetOpponent(Player player)
         {
             // Just return the other player
-            return _player1;
+            if (player == _player1)
+                return _player2;
+            else
+                return _player1;
         }
 
         #endregion
     }
+
+
 }

@@ -687,11 +687,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Bow Valley\\2019-02 SPRING\\SODV1202\\Project-ConnectFour\\ConnectFour\\ConnectFour\\ConnectFour.csproj",
+      "projectUniqueName": "E:\\Bow Valley\\2019-02 SPRING\\SODV1202\\Team-Hortons-master\\ConnectFour\\ConnectFour\\ConnectFour.csproj",
       "projectName": "ConnectFour",
-      "projectPath": "E:\\Bow Valley\\2019-02 SPRING\\SODV1202\\Project-ConnectFour\\ConnectFour\\ConnectFour\\ConnectFour.csproj",
+      "projectPath": "E:\\Bow Valley\\2019-02 SPRING\\SODV1202\\Team-Hortons-master\\ConnectFour\\ConnectFour\\ConnectFour.csproj",
       "packagesPath": "C:\\Users\\ManoyDaMan\\.nuget\\packages\\",
-      "outputPath": "E:\\Bow Valley\\2019-02 SPRING\\SODV1202\\Project-ConnectFour\\ConnectFour\\ConnectFour\\obj\\",
+      "outputPath": "E:\\Bow Valley\\2019-02 SPRING\\SODV1202\\Team-Hortons-master\\ConnectFour\\ConnectFour\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
